@@ -3,7 +3,7 @@ async function AddStudent(req, res,next) {
     let tz      = req.body.tz;
     let kita_id = req.body.kita_id ;
 
-    let Query="INSERT INTO `students` ";
+    let Query="INSERT INTO `student` ";
     Query += " ( `name`, `tz`, `kita_id`) ";
     Query += " VALUES ";
     Query += ` ('${name}','${tz}','${kita_id}') `;
@@ -23,7 +23,7 @@ async function AddStudent(req, res,next) {
 async function ReadStudents(req,res,next){
     let search_str = (req.body.search_txt===undefined) ? "" : req.body.search_txt;
 
-    let Query = `SELECT * FROM students `;
+    let Query = `SELECT * FROM student `;
     if(search_str !== ""){
         Query += ` WHERE (name LIKE '%${search_str}%')`;
         Query += ` OR (tz LIKE '%${search_str}%')`;
@@ -51,7 +51,7 @@ async function UpdateStudent(req,res,next){
     let tz      = req.body.tz;
     let kita_id = req.body.kita_id ;
 
-    let Query = `UPDATE students SET `;
+    let Query = `UPDATE student SET `;
     Query += ` kita_id = '${kita_id}' , `;
     Query += ` name = '${name}' , `;
     Query += ` tz = '${tz}' `;
@@ -70,7 +70,7 @@ async function UpdateStudent(req,res,next){
 }
 async function DeleteStudent(req,res,next){
     let idx             = req.body.idx;
-    let Query = `DELETE FROM students  `;
+    let Query = `DELETE FROM student  `;
     Query += ` WHERE id = ${idx} `;
     // console.log(Query);
     const promisePool = db_pool.promise();

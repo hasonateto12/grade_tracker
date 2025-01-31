@@ -3,8 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        td,th{border: 1px solid black;}
+    </style>
 </head>
 <body>
+<h1>הסטודנטים</h1>
+<table>
+    <thead>
+    <tr>
+        <td colspan="55">
+            <label for="txtToFind">שם או תז:</label>
+            <input type="text" id="txtToFind" oninput="showData()">
+            <select id="kitaSelect" onchange="showData()"> </select>
+        </td>
+    </tr>
+    <tr>
+        <th>שם</th>
+        <th>תז</th>
+        <th>כתה</th>
+    </tr>
+    </thead>
+    <tbody id="data_table"></tbody>
+</table>
+<script>
+    var kitot_data=[];
+    var students_data=[];
+    var student_to_show=[];
+    function SetKitotSelect() {
+        let s='';
+        s+=`<option value="-1">-- כל הכתות --</option>`;
+        for(let kita_id in kitot_data){
+            s+=`<option value="${kita_id}">${kitot_data[kita_id]}</option>`;
+        }
+        document.getElementById('kitaSelect').innerHTML=s;
+    }
 
+    function filterData() {
+        let kita = Number(document.getElementById('kitaSelect').value);
+        let txt  =        document.getElementById('txtToFind').value;
+        student_to_show = students_data.filter(std => {
+            return (
+                ((kita < 0) || (std.kita_id === kita))
+                &&
+                ((txt === "") || (std.name.includes(txt)) || (std.tz.includes(txt)) )
+            )
+        });
+    }
+    async function GetData(){
+        let url="/S/tito";
+        let response=await fetch(url);
+        let reply=await response.json();
+        students_data = reply.students;
+        kitot_data = reply.kitotById;
+        showData();
+        SetKitotSelect();
+    }
+    function showData(){
+        filterData();
+        let s="";
+        for(let row of student_to_show){
+            s+="<tr>";
+            s+=`<td>${row.name}</td>`;
+            s+=`<td>${row.tz}</td>`;
+            s+=`<td>${kitot_data[row.kita_id]}</td>`;
+            s+="</tr>";
+        }
+        document.getElementById("data_table").innerHTML=s;
+    }
+    GetData();
+
+</script>
 </body>
 </html>
